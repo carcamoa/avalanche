@@ -1,0 +1,9 @@
+{
+  "name": "sampleapi",
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "^2.918.0",
+    "axios": "^0.26.0",
+    "lambda-api": "https://github.com/jeremydaly/lambda-api.git#v0.11"
+  }
+}

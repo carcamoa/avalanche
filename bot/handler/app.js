@@ -1,24 +1,5 @@
 const api = require("lambda-api")();
-const axios = require("axios")
-
-let Page_Token = "EAALjqQVgQn0BACid2lfSWlRZAwDflxqbqP5aXZAdv4ifPZBaJ9lD1MUIDqecEEpwn4P2dbKhZAUGNHltF85URZBFUWY9tsQ1NylkH0FvrYBVZBJMLsjpPKlnR4DAcG4splnNFg7wf2Tukv987m20JL9HqcF9ZAhpdtSD2ZCQyZB9BDdlTXEZBAe6fD"
-let Page_Id = "113926546918613"
-
-function sendMessage(user,message)
-{
-    return axios({
-        data: {
-            "messaging_type": "RESPONSE",
-            "recipient": {
-            "id": user
-            },
-            "message": {
-            "text": message
-            }},
-        method: 'post',
-        url: `https://graph.facebook.com/v13.0/${Page_Id}/messages?access_token=${Page_Token}`
-    }).then(d => {return d.data}).catch(d => {return d.response.data})
-}
+const functions = require("./functions")
 
 //Necessary endpoint to verify webhook
 api.get("/test", async (req, res) => {
@@ -37,11 +18,8 @@ api.get("/test", async (req, res) => {
 
 api.post("/test", async (req, res) => {
 
-  let details = req.body.data.messaging[0]
-  let user = details.sender.id
-  let message = details.message.text
-
-  let results = await sendMessage(user,message)
+  let {user,message} = functions.parseWebhook(req)
+  let results = await functions.sendMessage(user,message)
 
   if (results.message_id)
   {

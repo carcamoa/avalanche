@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 
+  Sample API using AWS API gateway and a lambda function
+
+Parameters:
+
+  BucketName:
+    Type: String
+    Default: facebook-chatbot-data
+
+Resources:
+
+  EndpointFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Environment:
+        Variables:
+          bucket: !Ref S3Bucket
+      Policies:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "s3:*"
+            Resource: 
+              - !Sub 'arn:aws:s3:::${S3Bucket}/*'
+              - !Sub 'arn:aws:s3:::${S3Bucket}'
+      Events:
+        Others:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+        Base:
+          Type: HttpApi
+          Properties:
+            Path: / 
+            Method: ANY
+      MemorySize: 128
+      Timeout: 30
+
+  S3Bucket:
+    Type: "AWS::S3::Bucket"
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Ref BucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: False
+        BlockPublicPolicy: False
+        IgnorePublicAcls: False
+        RestrictPublicBuckets: False

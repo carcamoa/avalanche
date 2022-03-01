@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "chatbot-api"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-16fyvz0n20kua"
+s3_prefix = "chatbot-api"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "BucketName=\"facebook-chatbot-data\""
